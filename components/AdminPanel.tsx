@@ -3,7 +3,7 @@ import { Product, SiteImages, BlogPost } from '../types';
 import { dbService } from '../services/dbService';
 import { 
   Package, Image as ImageIcon, Plus, Trash2, Edit2, Save, X, 
-  LogOut, Upload, Search, CheckCircle, AlertCircle, LayoutDashboard,
+  LogOut, Upload, Search, 
   FileText, Camera, Loader2
 } from 'lucide-react';
 

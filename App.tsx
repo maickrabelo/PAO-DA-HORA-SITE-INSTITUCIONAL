@@ -1,16 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { PRODUCTS, CONTACT_INFO, INITIAL_BLOG_POSTS } from './constants';
+import { PRODUCTS, INITIAL_BLOG_POSTS } from './constants';
 import { ViewState, Product, SiteImages, BlogPost } from './types';
 import ProductCard from './components/ProductCard';
 import AdminPanel from './components/AdminPanel';
 import { dbService } from './services/dbService';
 import { 
-  ShoppingBag, Menu, X, Instagram, Facebook, Phone, MapPin, 
+  ShoppingBag, Menu, X, Instagram, Facebook, MapPin, 
   ChevronRight, Star, Quote, ArrowLeft, ArrowRight, Sparkles, 
-  Briefcase, CheckCircle2, Mail, Clock, Users, Truck, Flame, 
-  Award, ShieldCheck, Heart, User, MessageCircle, Newspaper,
+  Briefcase, CheckCircle2, Clock, Users, Truck, Flame, 
+  Award, ShieldCheck, MessageCircle,
   Settings, Loader2
 } from 'lucide-react';
+import BakerChat from './components/BakerChat';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>(ViewState.HOME);
@@ -635,6 +636,9 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* BAKER CHATBOT */}
+        <BakerChat />
 
       </main>
 
