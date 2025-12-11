@@ -7,12 +7,12 @@ import { getFirestore } from "firebase/firestore";
 // 3. Adicione um App Web
 // 4. Copie as configurações e cole abaixo
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY_AQUI",
-  authDomain: "seu-projeto.firebaseapp.com",
-  projectId: "seu-projeto",
-  storageBucket: "seu-projeto.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
+  apiKey: "AIzaSyD2Xw6GihcAk4KL26AIOGgXXQQWgsDmODU",
+  authDomain: "paodahora-bf494.firebaseapp.com",
+  projectId: "paodahora-bf494",
+  storageBucket: "paodahora-bf494.firebasestorage.app",
+  messagingSenderId: "133547494332",
+  appId: "1:133547494332:web:e82ca84df33890723b39b9"
 };
 
 // Inicializa o Firebase
