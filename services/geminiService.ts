@@ -1,9 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { PRODUCTS } from '../constants';
 
-// Initializing the client with the API key from environment variables
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 const SYSTEM_INSTRUCTION = `
 Você é o "Padeiro Amigo", um assistente virtual especialista e muito simpático da padaria "Pão da Hora".
 Seu tom de voz é acolhedor, apaixonado por pães e confeitaria, e sempre prestativo.
@@ -22,13 +19,12 @@ Diretrizes:
 
 export const sendMessageToBaker = async (userMessage: string, history: {role: string, parts: {text: string}[]}[]): Promise<string> => {
   try {
+    // Inicializamos o cliente aqui dentro para garantir que o site carregue mesmo se a chave der erro
+    // e para pegar a chave atualizada do ambiente.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+    
     const model = 'gemini-2.5-flash';
     
-    // Transform history to the format expected by the SDK if needed, 
-    // but here we will just use generateContent with system instruction for a single turn 
-    // or chat session if we were maintaining full state. 
-    // For simplicity in this demo, we use a chat session.
-
     const chat = ai.chats.create({
       model: model,
       config: {
@@ -45,6 +41,6 @@ export const sendMessageToBaker = async (userMessage: string, history: {role: st
     return result.text || "Desculpe, estou tirando uma fornada do forno e não consegui te ouvir. Pode repetir?";
   } catch (error) {
     console.error("Error talking to Gemini:", error);
-    return "Ops! Tivemos um pequeno problema na cozinha (erro técnico). Tente novamente em instantes.";
+    return "Ops! Tivemos um pequeno problema na cozinha (erro técnico ou falta de configuração). Tente novamente em instantes.";
   }
 };
