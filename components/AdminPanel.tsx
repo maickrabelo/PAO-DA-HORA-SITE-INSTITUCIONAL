@@ -4,7 +4,7 @@ import { dbService } from '../services/dbService';
 import { 
   Package, Image as ImageIcon, Plus, Trash2, Edit2, Save, X, 
   LogOut, Upload, Search, 
-  FileText, Camera, Loader2
+  FileText, Camera, Loader2, AlertTriangle
 } from 'lucide-react';
 
 interface AdminPanelProps {
@@ -51,9 +51,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       
-      // Validação de tamanho (limite do Firestore é 1MB, vamos avisar com 700kb)
-      if (file.size > 700 * 1024) {
-        alert("Atenção: Imagem muito grande! Tente usar uma imagem menor que 700KB para garantir que ela seja salva no banco de dados.");
+      // Validação Estrita: 400KB limit
+      // Firestore tem limite de 1MB por documento. Se somarmos todas as imagens, explode fácil.
+      // Limitando cada imagem ajuda a manter o documento saudável.
+      if (file.size > 400 * 1024) {
+        alert(`A imagem "${file.name}" é muito grande (${(file.size / 1024).toFixed(0)}KB).\n\nO limite é 400KB para garantir o salvamento no banco de dados.\n\nPor favor, use um site como 'tinypng.com' para comprimir a imagem antes de enviar.`);
+        return; // PARE AQUI. Não continue.
       }
 
       const reader = new FileReader();
@@ -71,8 +74,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     setIsSaving(true);
     try {
       await dbService.saveSiteImages(newImages);
-    } catch (error) {
-      alert("Erro ao salvar imagem no banco de dados. Verifique o console.");
+    } catch (error: any) {
+      console.error("Full error:", error);
+      let msg = "Erro desconhecido ao salvar.";
+      if (error.code === 'permission-denied') {
+        msg = "Permissão negada! Verifique se as 'Rules' do Firestore estão como 'allow read, write: if true;'";
+      } else if (error.code === 'resource-exhausted') {
+        msg = "Cota excedida ou documento muito grande. Tente imagens menores.";
+      } else if (error.message && error.message.includes("exceeds the maximum size")) {
+        msg = "O tamanho total das imagens excedeu o limite do banco de dados (1MB). Tente usar imagens menores.";
+      }
+      alert(`Erro ao salvar: ${msg}`);
+      // Revert UI on error (optional, but good UX)
     } finally {
       setIsSaving(false);
     }
@@ -112,7 +125,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       setIsEditing(false);
       setCurrentProduct({});
     } catch (error) {
-      alert("Erro ao salvar produto no banco de dados.");
+      alert("Erro ao salvar produto. Verifique se a imagem não é muito pesada.");
     } finally {
       setIsSaving(false);
     }
@@ -165,7 +178,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       setIsEditingBlog(false);
       setCurrentPost({});
     } catch (error) {
-      alert("Erro ao salvar post no banco de dados.");
+      alert("Erro ao salvar post. Verifique se a imagem não é muito pesada.");
     } finally {
       setIsSaving(false);
     }
@@ -404,43 +417,53 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
           {/* IMAGES TAB */}
           {activeTab === 'images' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {Object.entries(siteImages).map(([key, url]) => (
-                <div key={key} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                  <div className="mb-4 aspect-video rounded-lg overflow-hidden bg-gray-100 border border-gray-200 relative group">
-                    <img src={url || 'https://placehold.co/400x300?text=Sem+Imagem'} alt={key} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-sm font-bold">
-                      Visualização
+            <div className="space-y-6">
+              <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg flex items-start gap-3 text-yellow-800 text-sm">
+                 <AlertTriangle size={24} className="shrink-0" />
+                 <p>
+                   <strong>Atenção:</strong> Como estamos usando um banco de dados leve, envie apenas imagens pequenas/comprimidas (máximo 400KB). 
+                   Imagens muito grandes podem falhar ao salvar.
+                 </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {Object.entries(siteImages).map(([key, url]) => (
+                  <div key={key} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div className="mb-4 aspect-video rounded-lg overflow-hidden bg-gray-100 border border-gray-200 relative group">
+                      <img src={url || 'https://placehold.co/400x300?text=Sem+Imagem'} alt={key} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-sm font-bold">
+                        Visualização
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-brand-blue capitalize mb-2">
+                        {key === 'hero' ? 'Banner Principal (Início)' : 
+                         key === 'historyOld' ? 'Foto Antiga (História)' :
+                         key === 'historyNew' ? 'Foto Atual (História)' : 
+                         key === 'logo' ? 'Logomarca do Site' :
+                         'Banner Serviços'}
+                      </h3>
+                      <div className="flex gap-2 items-center mt-2">
+                        {isSaving ? (
+                          <div className="flex items-center gap-2 text-sm text-brand-brown">
+                            <Loader2 size={16} className="animate-spin" /> Salvando...
+                          </div>
+                        ) : (
+                          <label className="flex-1 bg-brand-beige/30 hover:bg-brand-beige text-brand-brown border border-brand-wheat/50 rounded-lg p-2 flex items-center justify-center gap-2 cursor-pointer transition-colors text-sm font-bold">
+                            <Upload size={16} /> Alterar Imagem
+                            <input 
+                              type="file" 
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => handleImageUpload(e, (newUrl) => handleSaveSiteImage(key as keyof SiteImages, newUrl))}
+                            />
+                          </label>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-brand-blue capitalize mb-2">
-                      {key === 'hero' ? 'Banner Principal (Início)' : 
-                       key === 'historyOld' ? 'Foto Antiga (História)' :
-                       key === 'historyNew' ? 'Foto Atual (História)' : 
-                       key === 'logo' ? 'Logomarca do Site' :
-                       'Banner Serviços'}
-                    </h3>
-                    <div className="flex gap-2 items-center mt-2">
-                      {isSaving ? (
-                        <div className="flex items-center gap-2 text-sm text-brand-brown">
-                          <Loader2 size={16} className="animate-spin" /> Salvando...
-                        </div>
-                      ) : (
-                        <label className="flex-1 bg-brand-beige/30 hover:bg-brand-beige text-brand-brown border border-brand-wheat/50 rounded-lg p-2 flex items-center justify-center gap-2 cursor-pointer transition-colors text-sm font-bold">
-                          <Upload size={16} /> Alterar Imagem
-                          <input 
-                            type="file" 
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => handleImageUpload(e, (newUrl) => handleSaveSiteImage(key as keyof SiteImages, newUrl))}
-                          />
-                        </label>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -515,6 +538,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                       onChange={(e) => handleImageUpload(e, (url) => setCurrentProduct({...currentProduct, imageUrl: url}))}
                     />
                   </label>
+                  <p className="text-xs text-red-500 mt-1">* Max 400KB por imagem</p>
                 </div>
 
                 <div className="col-span-2">
@@ -592,6 +616,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                       onChange={(e) => handleImageUpload(e, (url) => setCurrentPost({...currentPost, imageUrl: url}))}
                     />
                   </label>
+                  <p className="text-xs text-red-500 mt-1">* Max 400KB por imagem</p>
                 </div>
 
                 <div>

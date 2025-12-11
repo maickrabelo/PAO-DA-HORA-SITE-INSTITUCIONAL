@@ -1,22 +1,26 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// --- IMPORTANTE: SUBSTITUA COM SUAS CONFIGURAÇÕES DO FIREBASE ---
-// 1. Vá em console.firebase.google.com
-// 2. Crie um projeto "Pao da Hora"
-// 3. Adicione um App Web
-// 4. Copie as configurações e cole abaixo
+// Fix TS error: Property 'env' does not exist on type 'ImportMeta'
+const env = (import.meta as any).env || {};
+
+// Configuração que suporta variáveis de ambiente (Vercel) OU edição manual
 const firebaseConfig = {
-  apiKey: "AIzaSyD2Xw6GihcAk4KL26AIOGgXXQQWgsDmODU",
-  authDomain: "paodahora-bf494.firebaseapp.com",
-  projectId: "paodahora-bf494",
-  storageBucket: "paodahora-bf494.firebasestorage.app",
-  messagingSenderId: "133547494332",
-  appId: "1:133547494332:web:e82ca84df33890723b39b9"
+  apiKey: env.VITE_FIREBASE_API_KEY || "SUA_API_KEY_AQUI",
+  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || "seu-projeto.firebaseapp.com",
+  projectId: env.VITE_FIREBASE_PROJECT_ID || "seu-projeto",
+  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET || "seu-projeto.appspot.com",
+  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789",
+  appId: env.VITE_FIREBASE_APP_ID || "1:123456789:web:abcdef"
 };
 
 // Verifica se a configuração ainda é a padrão (placeholder)
-export const isConfigured = firebaseConfig.apiKey !== "SUA_API_KEY_AQUI" && firebaseConfig.projectId !== "seu-projeto";
+// Se qualquer uma das chaves contiver "SUA_API_KEY" ou o ID do projeto for o placeholder, considera não configurado.
+export const isConfigured = 
+  firebaseConfig.apiKey !== "SUA_API_KEY_AQUI" && 
+  firebaseConfig.projectId !== "seu-projeto" &&
+  firebaseConfig.projectId !== undefined &&
+  firebaseConfig.apiKey !== undefined;
 
 // Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
