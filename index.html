@@ -12,12 +12,11 @@
           extend: {
             colors: {
               brand: {
-                // Mapeando as cores solicitadas para a estrutura existente
-                wheat: '#c75d23',  // Cor ferrugem/laranja (Substitui o antigo dourado)
-                beige: '#fbe9db',  // Bege claro rosado
-                brown: '#c75d23',  // Cor ferrugem (para textos de destaque)
-                blue: '#6b3529',   // Marrom escuro (Substitui o azul marinho como cor primária escura)
-                white: '#FFFFFF'
+                wheat: '#D4A373',  // Dourado/Crosta (Complementar ao Marrom)
+                beige: '#F4E9D5',  // Bege Pão (Fundo suave)
+                brown: '#7A5433',  // Marrom Crosta (Títulos fortes)
+                blue: '#1F2A38',   // Azul Noturno (Contraste/Destaque)
+                white: '#FFFFFF'   // Branco Neve
               }
             },
             fontFamily: {
@@ -30,14 +29,14 @@
     </script>
     <style>
       body {
-        background-color: #fbe9db;
-        color: #6b3529;
+        background-color: #F4E9D5;
+        color: #7A5433;
       }
       .font-montserrat {
         font-family: 'Montserrat', sans-serif;
       }
       ::selection {
-        background-color: #c75d23;
+        background-color: #7A5433;
         color: #FFFFFF;
       }
     </style>
@@ -45,13 +44,13 @@
 {
   "imports": {
     "react": "https://esm.sh/react@^19.2.1",
-    "react/": "https://esm.sh/react@^19.2.1/",
     "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
+    "react/": "https://esm.sh/react@^19.2.1/",
     "@google/genai": "https://esm.sh/@google/genai@^1.32.0",
     "lucide-react": "https://esm.sh/lucide-react@^0.559.0",
     "firebase/": "https://esm.sh/firebase@^12.6.0/",
-    "vite": "https://esm.sh/vite@^7.2.7",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.2.7"
   }
 }
 </script>
