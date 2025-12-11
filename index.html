@@ -12,11 +12,11 @@
           extend: {
             colors: {
               brand: {
-                wheat: '#D4A373',    // Trigo Dourado (Complementar para botões/detalhes)
-                beige: '#F4E9D5',    // Beige Pão (Fundo Suave)
-                brown: '#7A5433',    // Marrom Crosta (Títulos Fortes)
-                blue: '#1F2A38',     // Azul Noturno (Destaque e Contraste)
-                white: '#FFFFFF'     // Branco Neve (Áreas de Respiro)
+                wheat: '#D4A373',
+                beige: '#F4E9D5',
+                brown: '#7A5433',
+                blue: '#1F2A38',
+                white: '#FFFFFF'
               }
             },
             fontFamily: {
@@ -43,19 +43,20 @@
   <script type="importmap">
 {
   "imports": {
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-    "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react/": "https://aistudiocdn.com/react@^19.2.1/",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
-    "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js",
-    "firebase/": "https://esm.sh/firebase@^12.6.0/"
+    "firebase/": "https://esm.sh/firebase@^12.6.0/",
+    "react": "https://esm.sh/react@^19.2.1",
+    "react/": "https://esm.sh/react@^19.2.1/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.32.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.559.0",
+    "vite": "https://esm.sh/vite@^7.2.7",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
 </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>
