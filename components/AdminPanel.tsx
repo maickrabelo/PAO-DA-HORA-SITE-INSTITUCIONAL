@@ -440,7 +440,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                         {key === 'hero' ? 'Banner Principal (Início)' : 
                          key === 'historyOld' ? 'Foto Antiga (História)' :
                          key === 'historyNew' ? 'Foto Atual (História)' : 
-                         key === 'logo' ? 'Logomarca do Site' :
+                         key === 'logo' ? 'Logomarca do Cabeçalho' :
+                         key === 'footerLogo' ? 'Logomarca do Rodapé' :
                          'Banner Serviços'}
                       </h3>
                       <div className="flex gap-2 items-center mt-2">

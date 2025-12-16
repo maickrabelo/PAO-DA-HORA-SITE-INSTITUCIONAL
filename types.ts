@@ -31,6 +31,7 @@ export enum ViewState {
 
 export interface SiteImages {
   logo: string;
+  footerLogo: string;
   hero: string;
   historyOld: string;
   historyNew: string;

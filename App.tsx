@@ -25,6 +25,7 @@ const App: React.FC = () => {
   
   const defaultImages: SiteImages = {
     logo: '', 
+    footerLogo: '',
     hero: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
     historyOld: 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     historyNew: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
@@ -163,19 +164,14 @@ const App: React.FC = () => {
             onClick={() => scrollToSection('top')}
           >
             {siteImages.logo ? (
-              <img src={siteImages.logo} alt="Logo Pão da Hora" className="h-12 w-auto object-contain" />
+              <img src={siteImages.logo} alt="Logo Pão da Hora" className="h-20 md:h-24 w-auto object-contain" />
             ) : (
               <div className="bg-brand-brown text-white p-2.5 rounded-lg transition-transform group-hover:rotate-12">
                 <ShoppingBag size={24} />
               </div>
             )}
             
-            <div className="flex flex-col">
-              <h1 className="text-2xl font-serif font-bold text-brand-blue leading-none tracking-tight">
-                Pão da Hora
-              </h1>
-              <span className="text-[10px] uppercase tracking-[0.25em] text-brand-brown font-bold mt-1">Padaria Artesanal</span>
-            </div>
+            {/* Texto do cabeçalho removido conforme solicitado */}
           </div>
 
           {/* Desktop Nav */}
@@ -648,7 +644,9 @@ const App: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="md:col-span-1">
               <div className="flex items-center gap-2 mb-6">
-                 {siteImages.logo ? (
+                 {siteImages.footerLogo ? (
+                    <img src={siteImages.footerLogo} alt="Logo Pão da Hora Rodapé" className="h-12 w-auto object-contain" />
+                 ) : siteImages.logo ? (
                     <img src={siteImages.logo} alt="Logo Pão da Hora" className="h-12 w-auto object-contain bg-white/10 p-1 rounded" />
                  ) : (
                    <div className="bg-brand-wheat p-1.5 rounded text-brand-blue"><ShoppingBag size={20} /></div>
