@@ -14,7 +14,12 @@ import {
 import BakerChat from './components/BakerChat';
 
 const App: React.FC = () => {
-  const [view, setView] = useState<ViewState>(ViewState.HOME);
+  // Inicializa a view baseada na URL atual. Se for /admin, abre direto no Admin.
+  const [view, setView] = useState<ViewState>(() => {
+    const path = window.location.pathname;
+    return path.startsWith('/admin') ? ViewState.ADMIN : ViewState.HOME;
+  });
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [filter, setFilter] = useState<string>('todos');
   const [loading, setLoading] = useState(true);
@@ -33,6 +38,33 @@ const App: React.FC = () => {
   };
 
   const [siteImages, setSiteImages] = useState<SiteImages>(defaultImages);
+
+  // Sincroniza a URL com o estado da View
+  useEffect(() => {
+    if (view === ViewState.ADMIN) {
+      window.history.pushState({}, '', '/admin');
+    } else {
+      // Se estivesse no admin e saiu, volta a URL para a raiz
+      if (window.location.pathname.startsWith('/admin')) {
+        window.history.pushState({}, '', '/');
+      }
+    }
+  }, [view]);
+
+  // Handle browser back button
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (path.startsWith('/admin')) {
+        setView(ViewState.ADMIN);
+      } else {
+        setView(ViewState.HOME);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // --- LOAD FROM FIREBASE ---
   useEffect(() => {
