@@ -11,7 +11,6 @@ import {
   Award, ShieldCheck, MessageCircle,
   Settings, Loader2
 } from 'lucide-react';
-import BakerChat from './components/BakerChat';
 
 const App: React.FC = () => {
   // Inicializa a view baseada na URL atual. Se for /admin, abre direto no Admin.
@@ -630,43 +629,6 @@ const App: React.FC = () => {
 
           </div>
         )}
-
-        {/* MENU VIEW */}
-        {view === ViewState.MENU && (
-          <div className="animate-fadeIn min-h-screen bg-brand-beige/20 pb-20">
-            <div className="bg-brand-blue py-20 text-center px-4">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Nosso Cardápio</h2>
-              <p className="text-brand-wheat text-lg">Sabores que contam nossa história</p>
-            </div>
-
-            <div className="container mx-auto px-6 -mt-10">
-              <div className="bg-white p-4 rounded-xl shadow-lg flex flex-wrap justify-center gap-3 md:gap-6 mb-12 border border-brand-wheat/20">
-                {['todos', 'paes', 'doces', 'salgados', 'bebidas'].map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setFilter(cat)}
-                    className={`px-6 py-2 rounded capitalize font-bold transition-all duration-300 text-sm md:text-base font-sans tracking-wide ${
-                      filter === cat
-                        ? 'bg-brand-brown text-white shadow-md'
-                        : 'text-gray-500 hover:bg-brand-beige hover:text-brand-brown'
-                    }`}
-                  >
-                    {cat === 'paes' ? 'Pães' : cat}
-                  </button>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* BAKER CHATBOT */}
-        <BakerChat />
 
       </main>
 
