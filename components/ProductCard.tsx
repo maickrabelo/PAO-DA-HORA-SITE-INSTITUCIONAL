@@ -1,6 +1,6 @@
 import React from 'react';
 import { Product } from '../types';
-import { Plus } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -21,24 +21,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
       
       <div className="p-6 flex flex-col flex-1">
-        <div className="mb-4">
+        <div className="mb-6 flex-1">
           <h3 className="font-serif text-xl font-bold text-brand-brown mb-2 group-hover:text-brand-wheat transition-colors">{product.name}</h3>
-          <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 font-sans">{product.description}</p>
+          <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 font-sans">{product.description}</p>
         </div>
         
-        <div className="mt-auto flex items-center justify-between pt-4 border-t border-brand-beige">
-          <div className="flex flex-col">
-             <span className="text-xs text-brand-brown/60 font-bold uppercase tracking-wider">Preço</span>
-             <span className="text-2xl font-bold text-brand-blue">
-               R$ {product.price.toFixed(2).replace('.', ',')}
-             </span>
-          </div>
+        <div className="mt-auto pt-4 border-t border-brand-beige">
           <button 
-            className="w-10 h-10 rounded-full bg-brand-brown text-white flex items-center justify-center hover:bg-brand-wheat hover:text-brand-blue transition-all duration-300 shadow-md hover:shadow-lg"
-            title="Adicionar ao pedido"
-            onClick={() => alert(`Adicionado ${product.name}!`)}
+            className="w-full py-3 rounded-lg bg-brand-brown text-white flex items-center justify-center gap-2 hover:bg-brand-blue transition-all duration-300 shadow-md hover:shadow-lg font-bold uppercase tracking-wider text-sm"
+            onClick={() => alert(`Você selecionou: ${product.name}. Entre em contato para encomendar!`)}
           >
-            <Plus size={20} />
+            <ShoppingCart size={18} /> Selecionar
           </button>
         </div>
       </div>

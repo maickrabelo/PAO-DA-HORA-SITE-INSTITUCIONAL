@@ -13,10 +13,11 @@ import {
 } from 'lucide-react';
 
 const App: React.FC = () => {
-  // Inicializa a view baseada na URL atual. Se for /admin, abre direto no Admin.
+  // Inicializa a view. Checa tanto pathname quanto hash para robustez.
+  // O uso de hash (#admin) é mais seguro para servidores estáticos que não redirecionam rotas.
   const [view, setView] = useState<ViewState>(() => {
-    const path = window.location.pathname;
-    return path.startsWith('/admin') ? ViewState.ADMIN : ViewState.HOME;
+    const isUrlAdmin = window.location.pathname === '/admin' || window.location.hash === '#admin';
+    return isUrlAdmin ? ViewState.ADMIN : ViewState.HOME;
   });
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -38,31 +39,42 @@ const App: React.FC = () => {
 
   const [siteImages, setSiteImages] = useState<SiteImages>(defaultImages);
 
-  // Sincroniza a URL com o estado da View
+  // Sincroniza a URL com o estado da View usando Hash (ex: /#admin)
   useEffect(() => {
     if (view === ViewState.ADMIN) {
-      window.history.pushState({}, '', '/admin');
+      // Define o hash para admin
+      window.location.hash = 'admin';
     } else {
-      // Se estivesse no admin e saiu, volta a URL para a raiz
-      if (window.location.pathname.startsWith('/admin')) {
-        window.history.pushState({}, '', '/');
+      // Remove o hash se voltar para home
+      if (window.location.hash === '#admin') {
+        history.pushState("", document.title, window.location.pathname + window.location.search);
       }
     }
   }, [view]);
 
-  // Handle browser back button
+  // Handle browser navigation (Back/Forward) via HashChange
   useEffect(() => {
-    const handlePopState = () => {
-      const path = window.location.pathname;
-      if (path.startsWith('/admin')) {
+    const handleHashChange = () => {
+      if (window.location.hash === '#admin') {
         setView(ViewState.ADMIN);
       } else {
         setView(ViewState.HOME);
       }
     };
 
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // Mantém compatibilidade com popstate caso o servidor suporte url limpa
+    const handlePopState = () => {
+       const isUrlAdmin = window.location.pathname === '/admin' || window.location.hash === '#admin';
+       setView(isUrlAdmin ? ViewState.ADMIN : ViewState.HOME);
+    };
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handlePopState);
+    };
   }, []);
 
   // --- LOAD FROM FIREBASE ---
@@ -201,8 +213,6 @@ const App: React.FC = () => {
                 <ShoppingBag size={24} />
               </div>
             )}
-            
-            {/* Texto do cabeçalho removido conforme solicitado */}
           </div>
 
           {/* Desktop Nav */}
@@ -627,6 +637,40 @@ const App: React.FC = () => {
                </div>
             </div>
 
+          </div>
+        )}
+
+        {/* MENU VIEW */}
+        {view === ViewState.MENU && (
+          <div className="animate-fadeIn min-h-screen bg-brand-beige/20 pb-20">
+            <div className="bg-brand-blue py-20 text-center px-4">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Nosso Cardápio</h2>
+              <p className="text-brand-wheat text-lg">Sabores que contam nossa história</p>
+            </div>
+
+            <div className="container mx-auto px-6 -mt-10">
+              <div className="bg-white p-4 rounded-xl shadow-lg flex flex-wrap justify-center gap-3 md:gap-6 mb-12 border border-brand-wheat/20">
+                {['todos', 'paes', 'doces', 'salgados', 'bebidas'].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setFilter(cat)}
+                    className={`px-6 py-2 rounded capitalize font-bold transition-all duration-300 text-sm md:text-base font-sans tracking-wide ${
+                      filter === cat
+                        ? 'bg-brand-brown text-white shadow-md'
+                        : 'text-gray-500 hover:bg-brand-beige hover:text-brand-brown'
+                    }`}
+                  >
+                    {cat === 'paes' ? 'Pães' : cat}
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {filteredProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

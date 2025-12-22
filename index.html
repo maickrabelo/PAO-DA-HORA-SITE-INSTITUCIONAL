@@ -12,11 +12,11 @@
           extend: {
             colors: {
               brand: {
-                wheat: '#D4A373',  // Dourado/Crosta (Complementar ao Marrom)
-                beige: '#F4E9D5',  // Bege Pão (Fundo suave)
-                brown: '#7A5433',  // Marrom Crosta (Títulos fortes)
-                blue: '#1F2A38',   // Azul Noturno (Contraste/Destaque)
-                white: '#FFFFFF'   // Branco Neve
+                wheat: '#D4A373',  // Dourado Trigo Clássico
+                beige: '#FAEDCD',  // Creme Suave
+                brown: '#603813',  // Marrom Café
+                blue: '#1F2A38',   // Azul Noturno
+                white: '#FFFFFF'   // Branco
               }
             },
             fontFamily: {
@@ -29,15 +29,23 @@
     </script>
     <style>
       body {
-        background-color: #F4E9D5;
-        color: #7A5433;
+        background-color: #FAEDCD;
+        color: #603813;
       }
       .font-montserrat {
         font-family: 'Montserrat', sans-serif;
       }
       ::selection {
-        background-color: #7A5433;
+        background-color: #D4A373;
         color: #FFFFFF;
+      }
+      /* Estilização para esconder scrollbar mantendo funcionalidade */
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
     </style>
   <script type="importmap">
