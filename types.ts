@@ -24,7 +24,6 @@ export interface ChatMessage {
 
 export enum ViewState {
   HOME = 'HOME',
-  MENU = 'MENU',
   ABOUT = 'ABOUT',
   ADMIN = 'ADMIN'
 }

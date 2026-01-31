@@ -19,25 +19,28 @@ Diretrizes:
 
 export const sendMessageToBaker = async (userMessage: string, history: {role: string, parts: {text: string}[]}[]): Promise<string> => {
   try {
-    // Inicializamos o cliente aqui dentro para garantir que o site carregue mesmo se a chave der erro
-    // e para pegar a chave atualizada do ambiente.
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+    // Always use the named parameter `apiKey` and obtain it from `process.env.API_KEY`.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
-    const model = 'gemini-2.5-flash';
+    // Use 'gemini-3-flash-preview' for basic text tasks like this chatbot.
+    const model = 'gemini-3-flash-preview';
     
+    // Create a chat instance with the provided history and system instruction.
     const chat = ai.chats.create({
       model: model,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
         temperature: 0.7,
       },
-      history: history // Pass existing history
+      history: history
     });
 
+    // Send the message using chat.sendMessage.
     const result = await chat.sendMessage({
       message: userMessage
     });
 
+    // Access the .text property directly (do not call as a method).
     return result.text || "Desculpe, estou tirando uma fornada do forno e não consegui te ouvir. Pode repetir?";
   } catch (error) {
     console.error("Error talking to Gemini:", error);

@@ -1,27 +1,40 @@
-import { initializeApp } from "firebase/app";
+
+import { initializeApp, getApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// Fix TS error: Property 'env' does not exist on type 'ImportMeta'
-const env = (import.meta as any).env || {};
-
-// Configuração que suporta variáveis de ambiente (Vercel) OU edição manual
-const firebaseConfig = {
-  apiKey: env.VITE_FIREBASE_API_KEY || "SUA_API_KEY_AQUI",
-  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || "seu-projeto.firebaseapp.com",
-  projectId: env.VITE_FIREBASE_PROJECT_ID || "seu-projeto",
-  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET || "seu-projeto.appspot.com",
-  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789",
-  appId: env.VITE_FIREBASE_APP_ID || "1:123456789:web:abcdef"
+// Helper para acessar variáveis de ambiente de forma segura no Vite
+const getEnv = (key: string) => {
+  return (import.meta as any).env?.[key] || (process as any).env?.[key] || "";
 };
 
-// Verifica se a configuração ainda é a padrão (placeholder)
-// Se qualquer uma das chaves contiver "SUA_API_KEY" ou o ID do projeto for o placeholder, considera não configurado.
+const firebaseConfig = {
+  apiKey: getEnv('VITE_FIREBASE_API_KEY') || "SUA_API_KEY_AQUI",
+  authDomain: getEnv('VITE_FIREBASE_AUTH_DOMAIN') || "seu-projeto.firebaseapp.com",
+  projectId: getEnv('VITE_FIREBASE_PROJECT_ID') || "seu-projeto",
+  storageBucket: getEnv('VITE_FIREBASE_STORAGE_BUCKET') || "seu-projeto.appspot.com",
+  messagingSenderId: getEnv('VITE_FIREBASE_MESSAGING_SENDER_ID') || "123456789",
+  appId: getEnv('VITE_FIREBASE_APP_ID') || "1:123456789:web:abcdef"
+};
+
+// Verifica se a configuração é válida
 export const isConfigured = 
   firebaseConfig.apiKey !== "SUA_API_KEY_AQUI" && 
   firebaseConfig.projectId !== "seu-projeto" &&
-  firebaseConfig.projectId !== undefined &&
-  firebaseConfig.apiKey !== undefined;
+  !!firebaseConfig.apiKey;
 
-// Inicializa o Firebase
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+let app;
+let db: any = null;
+
+try {
+  if (isConfigured) {
+    // Padrão de singleton para evitar inicializações múltiplas
+    app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+    db = getFirestore(app);
+  } else {
+    console.warn("Firebase não configurado ou chaves ausentes. Algumas funcionalidades podem não funcionar.");
+  }
+} catch (error) {
+  console.error("Falha ao inicializar Firebase:", error);
+}
+
+export { db };
