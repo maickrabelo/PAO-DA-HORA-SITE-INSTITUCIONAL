@@ -2,7 +2,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 
-console.log("Iniciando Padaria Pão da Hora...");
+// Log para confirmar que o arquivo foi carregado pelo navegador
+console.log("🍞 Padaria Pão da Hora: Iniciando...");
 
 const container = document.getElementById('root');
 
@@ -14,22 +15,18 @@ if (container) {
         <App />
       </React.StrictMode>
     );
-    console.log("Renderização concluída com sucesso.");
+    console.log("✅ Site carregado com sucesso.");
   } catch (err: any) {
-    console.error("Erro ao renderizar:", err);
+    console.error("❌ Erro ao montar o React:", err);
     container.innerHTML = `
-      <div style="padding: 40px; text-align: center; font-family: sans-serif; color: #6b3529;">
-        <h2 style="font-family: serif; font-size: 2rem;">Ops! A fornada queimou.</h2>
-        <p style="margin-top: 10px;">Ocorreu um erro ao carregar o site:</p>
-        <code style="display: block; background: #eee; padding: 10px; margin-top: 10px; border-radius: 5px; color: red;">
-          ${err.message || err}
-        </code>
-        <button onclick="window.location.reload()" style="margin-top: 20px; background: #c75d23; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-          Tentar novamente
-        </button>
+      <div style="padding: 40px; text-align: center; font-family: sans-serif; color: #6b3529; background: #fbe9db; min-height: 100vh; display: flex; flex-direction: column; justify-content: center;">
+        <h2 style="font-family: serif; font-size: 2rem;">A fornada queimou!</h2>
+        <p>Ocorreu um erro ao carregar o site.</p>
+        <pre style="background: #fff; padding: 10px; margin-top: 20px; border-radius: 4px; border: 1px solid #c75d23; font-size: 12px; color: red;">${err.message || err}</pre>
+        <button onclick="window.location.reload()" style="margin-top: 20px; background: #c75d23; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Tentar novamente</button>
       </div>
     `;
   }
 } else {
-  console.error("Elemento #root não encontrado no HTML.");
+  console.error("❌ Elemento 'root' não encontrado no HTML.");
 }

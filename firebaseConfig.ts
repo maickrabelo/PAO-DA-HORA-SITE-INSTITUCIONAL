@@ -1,8 +1,16 @@
 import { initializeApp, getApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
+// Busca variáveis do Vite ou do processo global injetado
 const getEnv = (key: string) => {
-  return (import.meta as any).env?.[key] || (process as any).env?.[key] || "";
+  if (typeof import.meta !== 'undefined' && (import.meta as any).env?.[key]) {
+    return (import.meta as any).env[key];
+  }
+  try {
+    return (process as any).env?.[key] || "";
+  } catch {
+    return "";
+  }
 };
 
 const firebaseConfig = {
@@ -14,7 +22,8 @@ const firebaseConfig = {
   appId: getEnv('VITE_FIREBASE_APP_ID')
 };
 
-export const isConfigured = !!firebaseConfig.apiKey && firebaseConfig.apiKey !== "SUA_API_KEY_AQUI";
+// Só tenta conectar se houver uma chave válida (mínimo de 20 caracteres)
+export const isConfigured = !!firebaseConfig.apiKey && firebaseConfig.apiKey.length > 20;
 
 let db: any = null;
 
@@ -22,11 +31,12 @@ if (isConfigured) {
   try {
     const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
     db = getFirestore(app);
+    console.log("🔥 Banco de dados conectado.");
   } catch (error) {
-    console.error("Erro ao inicializar Firebase:", error);
+    console.error("Erro ao conectar ao Firebase:", error);
   }
 } else {
-  console.warn("Firebase não configurado. O site funcionará em modo offline/estático.");
+  console.log("ℹ️ Site rodando em modo demonstração (sem banco de dados).");
 }
 
 export { db };
