@@ -2,8 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 
-// Log para depuração no console do navegador (F12)
-console.log("Padaria Pão da Hora: Iniciando aplicação...");
+console.log("Iniciando Padaria Pão da Hora...");
 
 const container = document.getElementById('root');
 
@@ -15,11 +14,22 @@ if (container) {
         <App />
       </React.StrictMode>
     );
-    console.log("Padaria Pão da Hora: Renderização concluída.");
-  } catch (error) {
-    console.error("Erro fatal na renderização:", error);
-    container.innerHTML = `<div style="padding: 20px; text-align: center; color: #6b3529;"><h1>Erro ao carregar o site</h1><p>Verifique o console do navegador para mais detalhes.</p></div>`;
+    console.log("Renderização concluída com sucesso.");
+  } catch (err: any) {
+    console.error("Erro ao renderizar:", err);
+    container.innerHTML = `
+      <div style="padding: 40px; text-align: center; font-family: sans-serif; color: #6b3529;">
+        <h2 style="font-family: serif; font-size: 2rem;">Ops! A fornada queimou.</h2>
+        <p style="margin-top: 10px;">Ocorreu um erro ao carregar o site:</p>
+        <code style="display: block; background: #eee; padding: 10px; margin-top: 10px; border-radius: 5px; color: red;">
+          ${err.message || err}
+        </code>
+        <button onclick="window.location.reload()" style="margin-top: 20px; background: #c75d23; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+          Tentar novamente
+        </button>
+      </div>
+    `;
   }
 } else {
-  console.error("Erro: Elemento #root não encontrado.");
+  console.error("Elemento #root não encontrado no HTML.");
 }
