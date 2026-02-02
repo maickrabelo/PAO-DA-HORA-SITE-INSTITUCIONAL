@@ -1,10 +1,12 @@
 import { initializeApp, getApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// Busca variáveis do Vite ou do processo global injetado
+// Busca variáveis do Vite (import.meta.env) ou do processo global (process.env)
 const getEnv = (key: string) => {
-  if (typeof import.meta !== 'undefined' && (import.meta as any).env?.[key]) {
-    return (import.meta as any).env[key];
+  // @ts-ignore
+  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
+    // @ts-ignore
+    return import.meta.env[key];
   }
   try {
     return (process as any).env?.[key] || "";
@@ -22,7 +24,7 @@ const firebaseConfig = {
   appId: getEnv('VITE_FIREBASE_APP_ID')
 };
 
-// Só tenta conectar se houver uma chave válida (mínimo de 20 caracteres)
+// Verifica se a configuração básica existe
 export const isConfigured = !!firebaseConfig.apiKey && firebaseConfig.apiKey.length > 20;
 
 let db: any = null;
@@ -36,7 +38,7 @@ if (isConfigured) {
     console.error("Erro ao conectar ao Firebase:", error);
   }
 } else {
-  console.log("ℹ️ Site rodando em modo demonstração (sem banco de dados).");
+  console.log("ℹ️ Site rodando em modo demonstração (Firebase não configurado).");
 }
 
 export { db };
