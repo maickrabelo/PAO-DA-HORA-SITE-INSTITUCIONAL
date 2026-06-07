@@ -25,12 +25,12 @@ const App: React.FC = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>(INITIAL_BLOG_POSTS);
   
   const defaultImages: SiteImages = {
-    logo: '', 
-    footerLogo: '',
+    logo: 'https://promo.paodahoraevoce.com/assets/logo-pao-6hfdDllO.png', 
+    footerLogo: 'https://promo.paodahoraevoce.com/assets/logo-pao-6hfdDllO.png',
     hero: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
     historyOld: 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     historyNew: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    services: 'https://images.unsplash.com/photo-1519659528534-7fd733a832a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+    services: 'https://bonaliment.com.br/wp-content/uploads/2025/02/Coffee-Break-e-Brunch-1-edited.jpg'
   };
 
   const [siteImages, setSiteImages] = useState<SiteImages>(defaultImages);
@@ -50,6 +50,7 @@ const App: React.FC = () => {
         setSiteImages(fetchedImages || defaultImages);
       } catch (err) {
         console.error("Erro ao carregar dados:", err);
+        setError("Não foi possível carregar os dados. Verifique a conexão.");
         // Não travamos o site se o Firebase falhar, apenas usamos os fallbacks.
       } finally {
         setLoading(false);
